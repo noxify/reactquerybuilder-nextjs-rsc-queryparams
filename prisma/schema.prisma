@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator enums {
+  provider = "tsx ./prisma/enum-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://user:user@localhost:5432/query_params"
+}
+
+enum TaskStatus {
+  todo
+  in_progress
+  done
+  canceled
+}
+
+enum TaskLabel {
+  bug
+  feature
+  enhancement
+  documentation 
+}
+
+enum TaskPriority {
+  low
+  medium
+  high
+}
+
+model Task {
+  id String @id @default(cuid())
+  name String 
+  code String @unique
+  label TaskLabel @default(bug)
+  status TaskStatus @default(todo)
+  priority TaskPriority @default(low)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  assignee Assignee[] 
+}
+
+model Assignee {
+  id String @id @default(cuid())
+  name String
+  tasks Task[]
+}
